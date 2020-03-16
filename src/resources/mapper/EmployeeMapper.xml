@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.EmployeeDao">
+    <resultMap id="MsgPushEntity"  type="main.java.com.ha.pojo.Employee" >
+        <result column="photo" property="photo"  typeHandler="main.java.com.ha.util.BlobTypeHandle"/>
+
+    </resultMap>
+
+<!--
+    <select id="selectAll" resultType="main.java.com.ha.pojo.Employee">
+          select  emp_id,emp_fname,card_id,depart_id,Bless from  Employee where Bless=0
+    </select>
+ &lt;!&ndash; 根据emp_id查询card_id&ndash;&gt;
+    <select id="selectCardId" resultType="java.lang.String">
+          select  card_id from  Employee where emp_id= #{empId}
+    </select>
+
+    <select id="countAll" resultType="int">
+        select count(*) from Employee where Bless=0
+    </select>
+
+    &lt;!&ndash;根据openId查是否存在 &ndash;&gt;
+    <select id="findOpenId" resultType="java.lang.String" parameterType="String">
+      select open_id from Employee where  open_id = #{openId,jdbcType=VARCHAR}
+    </select>
+
+    &lt;!&ndash;根据工号和姓名查是否存在该员工信息 &ndash;&gt;
+    <select id="selectUser" resultType="java.lang.Integer" parameterType="java.util.Map">
+      select count(emp_id) from Employee where emp_fname = #{empFname,jdbcType=VARCHAR} and emp_id = #{empId,jdbcType=VARCHAR}
+    </select>
+
+    &lt;!&ndash;根据工号和姓名查是否绑定微信公众号 参数openid &ndash;&gt;
+    <select id="selectOpenid" resultType="java.lang.String" parameterType="java.util.Map">
+      select open_id from Employee where emp_fname = #{empFname,jdbcType=VARCHAR} and emp_id = #{empId,jdbcType=VARCHAR}
+    </select>
+
+    &lt;!&ndash;根据openId查员工基本信息 &ndash;&gt;
+    <select id="selectUserInfo" resultType="main.java.com.ha.pojo.Employee"  parameterType="String">
+      select emp_fname,emp_id from Employee where  open_id = #{openId,jdbcType=VARCHAR}
+    </select>-->
+    <!--根据工号和姓名查是否绑定微信公众号-->
+    <select id="selectOpenid" resultType="java.lang.String" parameterType="java.util.Map">
+      select open_id from Employee where emp_id = #{empId,jdbcType=VARCHAR}
+    </select>
+
+
+    <!--查图片 -->
+    <select id="selectimg" resultType="byte[]" resultMap="MsgPushEntity">
+SELECT photo  from Employee WHERE photo IS NOT NULL
+    </select>
+
+    <select id="getQrcode" parameterType="map" resultType="main.java.com.ha.pojo.Employee">
+        SELECT emp_id,emp_fname,photo  from Employee WHERE photo IS NOT NULL and Bless=0
+    </select>
+
+    <!--出入门禁记录  列表展示-->
+    <select id="selectChuRuList" resultType="main.java.com.ha.pojo.Employee" parameterType="map">
+     SELECT
+	e.emp_fname,
+	e.open_id,
+	p.passtime,
+	p.id,
+	s.doorname,
+	s.inoutflag
+FROM
+	employee e
+LEFT JOIN passtime p ON e.emp_id = p.emp_id
+LEFT JOIN subdevice s ON p.readno = s.id
+WHERE
+	e.emp_id=  #{0,jdbcType=VARCHAR}
+	AND CONVERT(varchar(100), p.passtime, 23) LIKE  '%'+#{2}+'%'
+	ORDER BY p.passtime DESC
+    </select>
+
+
+    <!--查询出入门禁记录  微信发送消息 -->
+    <select id="selectEntranceList" resultType="main.java.com.ha.pojo.Employee" parameterType="map">
+     SELECT
+	e.emp_fname,
+	e.open_id,
+	p.passtime,
+	p.id,
+	s.doorname,
+	s.inoutflag
+FROM
+	employee e
+LEFT JOIN passtime p ON e.emp_id = p.emp_id
+LEFT JOIN subdevice s ON p.readno = s.id
+WHERE
+	p.id >  #{0,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getMaxNRecSeq" resultType="int">
+        select ISNULL(MAX(id),0) from passtime
+    </select>
+
+    <update id="updateState" parameterType="main.java.com.ha.dao.EmployeeDao" >
+        update Employee
+        <set >
+            <if test="Bless != null" >
+                bless = #{Bless,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where 1=1
+        <if test="empId != null and empId != ''">
+            and emp_id  = #{empId}
+        </if>
+
+    </update>
+
+    <!--根据工号和姓名 绑定openid local-->
+    <update id="updateOpenid"  parameterType="main.java.com.ha.dao.EmployeeDao"  >
+        update Employee
+        <set >
+            <if test="openId != null" >
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where 1=1
+        <if test="empId != null and empId != ''">
+            and emp_id  = #{empId}
+        </if>``
+    </update>
+</mapper>

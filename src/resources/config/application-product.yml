@@ -1,0 +1,17 @@
+server:
+  port: 8099
+  tomcat:
+    max-threads: 800
+    max-http-header-size: 8192
+    uri-encoding: UTF-8
+
+
+spring:
+  datasource:
+    druid:
+      username: sa
+      password: 123456
+      url: jdbc:sqlserver://localhost:1433;databasename=EastRiver
+
+    schema: classpath:schema.sql
+

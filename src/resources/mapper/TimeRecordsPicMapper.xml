@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.TimeRecordsPicDao">
+    <!--查询没有推送到微信的记录-->
+    <select id="selectList" resultType="main.java.com.ha.pojo.TimeRecordsPic">
+        select id,emp_id,sign_time,flag,pic_local,pic_extranet from  TimeRecords_Pic where flag=0
+    </select>
+    <!--保存当前人脸成功记录-->
+   <insert id="insertTimeRecordsPic" parameterType="main.java.com.ha.pojo.TimeRecordsPic">
+
+        insert into TimeRecords_Pic
+        (emp_id,sign_time,flag,pic_local)
+        values (#{empId},#{signTime,jdbcType=TIMESTAMP},#{flag},#{picLocal,jdbcType=VARCHAR})
+    </insert>
+    <!--发送过人脸图片，更新标记-->
+    <update id="updateFlag" parameterType="main.java.com.ha.pojo.TimeRecordsPic">
+      update TimeRecords_Pic set flag =1  where emp_id = #{empId}
+    </update>
+
+    <!--发送过人脸图片，更新外网图片地址-->
+    <update id="updateUrl" parameterType="main.java.com.ha.pojo.TimeRecordsPic">
+      update TimeRecords_Pic set pic_extranet =#{1}  where pic_local = #{0}
+    </update>
+</mapper>

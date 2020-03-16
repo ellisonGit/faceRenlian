@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.ClockWhiteCardDao">
+
+    <!--插入下发白名单记录-->
+    <insert id="insertClockWhite" parameterType="main.java.com.ha.pojo.ClockWhiteCard">
+
+        insert into clockwhitecard
+        (clock_id,card_id,card_sn,emp_id,emp_fname,cardtype,cardtypecode,areacode)
+        values (#{clockId,jdbcType=VARCHAR},#{cardId,jdbcType=VARCHAR},#{cardSn,jdbcType=VARCHAR},#{empId,jdbcType=VARCHAR},
+        #{empFname,jdbcType=VARCHAR},#{cardtype},#{cardtypecode,jdbcType=VARCHAR},#{areacode,jdbcType=VARCHAR}
+        )
+    </insert>
+
+
+    <select id="selectIsexist" resultType="main.java.com.ha.pojo.ClockWhiteCard" parameterType="java.util.Map">
+        select clock_id,card_id,card_sn,emp_id,emp_fname,cardtype,cardtypecode,areacode
+         from
+         clockwhitecard
+         where
+         clock_id = #{clockId,jdbcType=VARCHAR}
+         and emp_id=#{empId,jdbcType=VARCHAR}
+        </select>
+
+    <!--删除白名单记录-->
+    <delete id="delClockWhite" parameterType="main.java.com.ha.pojo.ClockWhiteCard">
+
+         delete clockwhitecard
+        where card_id=#{cardId,jdbcType=VARCHAR}
+         and emp_id= #{empId,jdbcType=VARCHAR}
+         and clock_id=#{clockId,jdbcType=VARCHAR}
+
+    </delete>
+
+</mapper>

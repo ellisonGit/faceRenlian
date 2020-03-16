@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.SyncSignDao">
+
+    <select id="getSyncSign" resultType="main.java.com.ha.pojo.SyncSign">
+      select * from sync_sign where id = 1
+    </select>
+    <!-- 消费记录-->
+    <select id="getSyncSignToo" resultType="main.java.com.ha.pojo.SyncSign">
+      select * from sync_sign where id = 2
+    </select>
+    <!-- 门禁记录-->
+    <select id="getSyncSignTr" resultType="main.java.com.ha.pojo.SyncSign">
+      select * from sync_sign where id = 3
+    </select>
+
+    <update id="updateSyncSign" parameterType="main.java.com.ha.pojo.SyncSign">
+      update sync_sign set sign_consume = #{signConsume}  where id = #{id}
+    </update>
+
+</mapper>

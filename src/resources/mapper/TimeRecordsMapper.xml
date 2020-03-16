@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.TimeRecordsDao">
+    <select id="selectAll" resultType="main.java.com.ha.pojo.TimeRecords">
+          select * from  TimeRecords
+    </select>
+    <!--插入打卡记录-->
+   <insert id="insertTimeRecords" parameterType="main.java.com.ha.pojo.TimeRecords">
+
+        insert into TimeRecords
+        (emp_id,card_id,sign_time,clock_id)
+        values (#{empId},#{cardId,jdbcType=VARCHAR},#{signTime,jdbcType=TIMESTAMP},#{clockId})
+    </insert>
+</mapper>

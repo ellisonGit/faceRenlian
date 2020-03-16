@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main.java.com.ha.dao.WhiteCardTaskDao">
+
+    <!--
+        <select id="selectAll" resultType="main.java.com.ha.pojo.Employee">
+              select  emp_id,emp_fname,card_id,depart_id,Bless from  Employee where Bless=0
+        </select>
+     &lt;!&ndash; 根据emp_id查询card_id&ndash;&gt;
+        <select id="selectCardId" resultType="java.lang.String">
+              select  card_id from  Employee where emp_id= #{empId}
+        </select>
+
+        <select id="countAll" resultType="int">
+            select count(*) from Employee where Bless=0
+        </select>
+
+        &lt;!&ndash;根据openId查是否存在 &ndash;&gt;
+        <select id="findOpenId" resultType="java.lang.String" parameterType="String">
+          select open_id from Employee where  open_id = #{openId,jdbcType=VARCHAR}
+        </select>
+
+        &lt;!&ndash;根据工号和姓名查是否存在该员工信息 &ndash;&gt;
+        <select id="selectUser" resultType="java.lang.Integer" parameterType="java.util.Map">
+          select count(emp_id) from Employee where emp_fname = #{empFname,jdbcType=VARCHAR} and emp_id = #{empId,jdbcType=VARCHAR}
+        </select>
+
+        &lt;!&ndash;根据工号和姓名查是否绑定微信公众号 参数openid &ndash;&gt;
+        <select id="selectOpenid" resultType="java.lang.String" parameterType="java.util.Map">
+          select open_id from Employee where emp_fname = #{empFname,jdbcType=VARCHAR} and emp_id = #{empId,jdbcType=VARCHAR}
+        </select>
+
+        &lt;!&ndash;根据openId查员工基本信息 &ndash;&gt;
+        <select id="selectUserInfo" resultType="main.java.com.ha.pojo.Employee"  parameterType="String">
+          select emp_fname,emp_id from Employee where  open_id = #{openId,jdbcType=VARCHAR}
+        </select>-->
+    <!--查询没有下发的白名单-->
+    <select id="selectNoWhite" parameterType="map" resultType="main.java.com.ha.pojo.WhiteCardTask">
+   SELECT
+    w.id,
+	w.card_id,
+	w.card_Sn,
+	w.emp_id,
+    w.emp_fname,
+	w.flag,
+	w.clock_id,
+	w.cardtype,
+	w.cardtypecode,
+	w.areacode,
+	w.opdate,
+	w.operator,
+	w.ExecuteDate,
+	w.RealCardNo,
+  c.remark,
+  e.photo
+FROM
+	whitecardtask w
+LEFT JOIN clocks c on w.clock_id=c.clock_id
+LEFT JOIN Employee e on w.emp_id=e.emp_id
+WHERE
+	w.flag = 0
+AND ExecuteDate IS NULL
+AND RealCardNo IS NULL
+AND e.photo is not null
+    </select>
+
+
+    <!--查询删除标记的白名单-->
+    <select id="selectNoWhiteDel" parameterType="map" resultType="main.java.com.ha.pojo.WhiteCardTask">
+   SELECT
+    w.id,
+	w.card_id,
+	w.card_Sn,
+	w.emp_id,
+    w.emp_fname,
+	w.flag,
+	w.clock_id,
+	w.cardtype,
+	w.cardtypecode,
+	w.areacode,
+	w.opdate,
+	w.operator,
+	w.ExecuteDate,
+	w.RealCardNo,
+  c.remark,
+  e.photo
+FROM
+	whitecardtask w
+LEFT JOIN clocks c on w.clock_id=c.clock_id
+LEFT JOIN Employee e on w.emp_id=e.emp_id
+WHERE
+	w.flag = 1
+AND ExecuteDate IS NULL
+AND RealCardNo IS NULL
+    </select>
+
+
+	<!--查询已删除标记白名单-->
+	<select id="selectWhiteDel" parameterType="map" resultType="main.java.com.ha.pojo.WhiteCardTask">
+    SELECT  DISTINCT
+	w.card_id,
+	w.emp_id,
+	w.clock_id
+  FROM
+	whitecardtask w
+  WHERE
+	flag = 1
+  AND ExecuteDate IS NULL
+  AND RealCardNo IS NULL
+    </select>
+
+
+	<update id="updateState" parameterType="main.java.com.ha.dao.WhiteCardTaskDao">
+        update whitecardtask
+        <set>
+            <if test="ExecuteDate != null">
+				ExecuteDate = #{ExecuteDate,jdbcType=VARCHAR},
+            </if>
+			<if test="RealCardNo != null">
+				RealCardNo = #{RealCardNo,jdbcType=VARCHAR},
+			</if>
+
+        </set>
+        where 1=1
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+
+    </update>
+
+</mapper>
